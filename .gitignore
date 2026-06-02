@@ -1,0 +1,80 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE / OS
+.vscode/
+.DS_Store
+Thumbs.db
+archive/
+
+# Root-level scratch files from earlier experiments.
+/0528qwen3_8b_decode_smoke.json
+/0528qwen3_8b_decode_smoke.json.metadata.json
+/answer_utils.py
+/asc_steering_utils.py
+/build_steering_vector.py
+/CLEANUP_PLAN.md
+/docs/
+/download_datasets.py
+/env_snapshot.py
+/eval_asc_custom_vector.py
+/eval_asc_dual_gpu_grid.py
+/eval_asc_paper.py
+/extract_optimal_gamma.py
+/extract_paper_kl_gamma.py
+/extract_steering_vector.py
+/gamma_theory_analysis.md
+/generate_cot_pairs.py
+/inspect_steering_vector.py
+/PROJECT_STRUCTURE.md
+/requirements.txt
+/VERSION_WORKFLOW.md
+
+# Local datasets and model checkpoints
+datasets/
+pairs/
+models/
+checkpoints/
+vectors/
+ASC_phase1/datasets/
+ASC_phase1/pairs/
+ASC_phase1/vectors/
+ASC_phase1/__pycache__/
+*.safetensors
+*.bin
+
+# Local paper-reading artifacts
+*.pdf
+*.docx
+ASC_extracted.txt
+Image.png
+屏幕截图*.png
+extracted_images*.md
+shuchu.txt
+
+# Temporary experiment outputs.
+results/*
+!results/
+!results/RESULT_SUMMARY.md
+*_interm.json
+eval_asc_results.json
+eval_asc_results_failures.json
+eval_gamma_*.json
+gamma_*_refine*.json
+repro_*.json
+env_*.json
+package_versions*.txt
+results/tmp/
+results/drafts/
+results/RESULTS_SUMMARY_FULL.md
+
+# Keep only the author's public comparison scripts under legacy.
+legacy/*
+!legacy/
+!legacy/author_code/
+!legacy/author_code/**
