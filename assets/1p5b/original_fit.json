@@ -1,0 +1,27 @@
+{
+  "version": "auto-code-v2",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+  "hidden_state_index": 21,
+  "decoder_output_layer": 20,
+  "parameters": {
+    "q25c": 0.888148010597869,
+    "q75c": 0.9989141310845991,
+    "q25v": 2.1830046484335987e-07,
+    "q75v": 0.0014852457558952,
+    "low_val_1": -0.49999999999999994,
+    "low_val_2": -1.5353450143175593,
+    "high_val_2": 0.1,
+    "initial_coef": -1.0,
+    "curve_tau": 0.002450814632284028
+  },
+  "vector_sha256": "fb360600cad48aebf1242ae125f7ccb3860177ae542351377a6898eb3a840b93",
+  "vector_norm": 83.61913299560547,
+  "calibration_source_sha256": "4d0194b30bb97d1ef0779b13d24ba47ba0aa7ccf38803e6a68f5c233ceb756a3",
+  "positives": 48251,
+  "negatives": 11309,
+  "selection": {
+    "layer": 21,
+    "r2": 0.6577421426773071
+  },
+  "method": "Author mixed labels/raw vector/online arithmetic controller; automatic layer selection with question-group validation; original-token alignment; correct LDA midpoint sign; low1=-mean crossing, low2=-max crossing; tau=min(0.01, half the feasible F(1) ceiling). Fixed high2=0.1, initial=-1. These are explicit adaptation choices, not an exact author reproduction."
+}

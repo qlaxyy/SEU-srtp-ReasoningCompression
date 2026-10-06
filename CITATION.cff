@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this code, cite this software and the underlying ReBalance, EasySteer and SRQ/representation-engineering work."
+title: "SEU SRTP Reasoning Compression"
+type: software
+authors:
+  - name: "SEU SRTP Reasoning Compression contributors"
+repository-code: "https://github.com/qlaxyy/SEU-srtp-ReasoningCompression"
+version: "0.1.0"
+date-released: "2026-10-07"
+license: Apache-2.0

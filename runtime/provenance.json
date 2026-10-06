@@ -1,0 +1,206 @@
+{
+  "runtime/overlays/vllm/vllm/forward_context.py": {
+    "historical_sha256": "c272a568e09097dcb1aa99c80681dd66476bf4bdc5f565c475a185e36e075fb3",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/algorithms/__init__.py": {
+    "historical_sha256": "4b192364be9c26dc1837d89d3408ac60a347040c2ac0b064fc2f199aafb2c965",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/algorithms/rebalance.py": {
+    "historical_sha256": "edad5ff71a6baf06b02b4c4e5d8b42483cee746c3730a34cb2c9d660ec8c422a",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/api.py": {
+    "historical_sha256": "e58b5a9ebcc5ea77147cb2518be5238409bb3cdef3ed145314dad30896e487ef",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/geometry.py": {
+    "historical_sha256": "44677c29bb901e5a1c58c1440ba33bd8cd5cbf56c1efa4214a2295097e116d81",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/payloads.py": {
+    "historical_sha256": "05cee1d97a3e1a97f159244546bf7396227902949b40ef77edea427905f30766",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/rebalance.py": {
+    "historical_sha256": "04eba2afa416e76371576117d2c78620ca71f075d627318651a37c8a1400b109",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/steer_vectors/request.py": {
+    "historical_sha256": "aba0e204f10d928e5b6c94299e55bde9ec62814fc486b7247a9a14d9c51982f4",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/v1/worker/gpu/model_runner.py": {
+    "historical_sha256": "1b90fa62add5595272146ef282681e667a16d4474d1ec544084f5d0b4443c8ce",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/v1/worker/gpu/sample/hybrid_termination.py": {
+    "historical_sha256": "2915794c3e5c6a71ca8360193e878471bb27111e213dd7babc17ae9dd24ba276",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/v1/worker/gpu/sample/sampler.py": {
+    "historical_sha256": "d9bb1a4f0410e958cc8e9658ef816dae619601dfc7d0854e9a68d52c7663c0ff",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/overlays/vllm/vllm/v1/worker/gpu/steer_vector_utils.py": {
+    "historical_sha256": "cf7719e915d13ec25781075a658e1a3f3427a8a5e6a56df38c715b2e2b9de46d",
+    "source": "final-experiment runtime snapshot"
+  },
+  "runtime/1p5b/global_kernel.py": {
+    "historical_sha256": "b82d30f065dea4566a8f0c93f10a04cf830d97057cb71668ddc62c74673c1dd4",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/phase_kernel.py": {
+    "historical_sha256": "566992e31ad24cc1d3d715e046fe819b130c89293f8127a2bf75a86e77b31d54",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/native_phase.py": {
+    "historical_sha256": "0685f0facfdd691a02a63a951b90897b52a39f12bfff5c089b86edcbb968204b",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/positions.py": {
+    "historical_sha256": "26248366588b9c4be55661ce733ad788c209fbef2ab09c225be428a0e4ea940b",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/teacher_force.py": {
+    "historical_sha256": "f0b28cb639834e8e2ac2029c7b403994ffaa5624270f85627db1c8b6a019703b",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/probed_teacher_force.py": {
+    "historical_sha256": "44e3e6e5e5b2621434a4b6800c373911d5f29101755bf1bf50cd0dcdd877710a",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/common.py": {
+    "historical_sha256": "a79b832bc5399d6e07391ce05b962e6c319bb8edf51628c9289c12166235ba09",
+    "portable_wrapper_changes": true
+  },
+  "runtime/1p5b/run_pilot.py": {
+    "historical_sha256": "debbbe41998a597b1d2b198672b3639dddf334c5acd58c0e5f86160892497a79",
+    "portable_wrapper_changes": true
+  },
+  "runtime/1p5b/vendor/adapter.py": {
+    "historical_sha256": "77f7ad62f37ac68341755e12037f1b95293b6f02133d17170f95c57810e52390",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/cache_identity.py": {
+    "historical_sha256": "a3634a857f8bbe4898119f516e48db44c722a694d287a457dee58d9f8316ea79",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/label_alignment_adapter.py": {
+    "historical_sha256": "861df9c4d85b5457810aedaaf818dea7551945269dc78dfdff3adfa4ebcbf290",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/mixture.py": {
+    "historical_sha256": "d53652664c449bf6f9b0a48c357ca81d67273dda1cd766e7635cc094c40c2fa3",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/penalty_adapter.py": {
+    "historical_sha256": "a084a654280d08e118a251c2c0c0ab4a8981d175a5f358e44d5f7432f73cd414",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/pinned_rebalance.py": {
+    "historical_sha256": "04eba2afa416e76371576117d2c78620ca71f075d627318651a37c8a1400b109",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/policy.py": {
+    "historical_sha256": "40462f53d50413d49a63a0662efa07ebce676da3341a9e4483fc4ad335321d20",
+    "portable_wrapper_changes": false
+  },
+  "runtime/1p5b/vendor/strength_policy.py": {
+    "historical_sha256": "95e370fc726b3be977a6a712ad6161c910d0bec45974a5580e5c0c86e98ba5aa",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/global_kernel.py": {
+    "historical_sha256": "3a80a45cc74dfa3e50b2e4126e0b391d9be7c6f1a961f8196a2361d335760f0f",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/phase_kernel.py": {
+    "historical_sha256": "566992e31ad24cc1d3d715e046fe819b130c89293f8127a2bf75a86e77b31d54",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/native_phase.py": {
+    "historical_sha256": "da9b6d1929c014e00cc79d2013963fccc562b3494f3f260ba61c9967e50867bc",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/positions.py": {
+    "historical_sha256": "26248366588b9c4be55661ce733ad788c209fbef2ab09c225be428a0e4ea940b",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/teacher_force.py": {
+    "historical_sha256": "f0b28cb639834e8e2ac2029c7b403994ffaa5624270f85627db1c8b6a019703b",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/probed_teacher_force.py": {
+    "historical_sha256": "44e3e6e5e5b2621434a4b6800c373911d5f29101755bf1bf50cd0dcdd877710a",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/common.py": {
+    "historical_sha256": "41164a7d1aa45dd7c0c32ab5738e5eb012593e691c310036535946d50bab536c",
+    "portable_wrapper_changes": true
+  },
+  "runtime/7b/run_pilot.py": {
+    "historical_sha256": "df7e61977cf3344e8b680dcf2590a1cec82e428f1e76d571d3a8ddad80cab737",
+    "portable_wrapper_changes": true
+  },
+  "runtime/7b/gpu_add_kernel.py": {
+    "historical_sha256": "506cf6079cdc2016620212eb11c1d5f8b5569b3303f08b709a34e68765bdf947",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/stable_add.py": {
+    "historical_sha256": "da2a6d5bdfd2622b8d14e3a9512fce4e97cc4fd1e369e691f3ae1b453e2e470e",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/replay_force.py": {
+    "historical_sha256": "4569376dc6294cbde1bcf03aca679ee0134491384867ae1894db8d917f01fe7a",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/replay_kernel.py": {
+    "historical_sha256": "2e403d7fd5a689194d232cf00fe6d317914bb2958ff612a1f92b30ba68191902",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/replay_penalty.py": {
+    "historical_sha256": "da3a8c53ec7689498dd535ce5d78d38e5c095cb4ead31c598e97bc696c474d24",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/replay_phase.py": {
+    "historical_sha256": "15beb30a4f661451c4f07c75cb19a67d9aec422337532ea67f4d250eca13ec62",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/replay_positions.py": {
+    "historical_sha256": "d4c307c0f76f8cf189d66d6666e15487feaba6b37145b8d493be73abb8a571c5",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/adapter.py": {
+    "historical_sha256": "77f7ad62f37ac68341755e12037f1b95293b6f02133d17170f95c57810e52390",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/cache_identity.py": {
+    "historical_sha256": "a3634a857f8bbe4898119f516e48db44c722a694d287a457dee58d9f8316ea79",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/label_alignment_adapter.py": {
+    "historical_sha256": "861df9c4d85b5457810aedaaf818dea7551945269dc78dfdff3adfa4ebcbf290",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/mixture.py": {
+    "historical_sha256": "d53652664c449bf6f9b0a48c357ca81d67273dda1cd766e7635cc094c40c2fa3",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/penalty_adapter.py": {
+    "historical_sha256": "a084a654280d08e118a251c2c0c0ab4a8981d175a5f358e44d5f7432f73cd414",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/pinned_rebalance.py": {
+    "historical_sha256": "04eba2afa416e76371576117d2c78620ca71f075d627318651a37c8a1400b109",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/policy.py": {
+    "historical_sha256": "40462f53d50413d49a63a0662efa07ebce676da3341a9e4483fc4ad335321d20",
+    "portable_wrapper_changes": false
+  },
+  "runtime/7b/vendor/strength_policy.py": {
+    "historical_sha256": "95e370fc726b3be977a6a712ad6161c910d0bec45974a5580e5c0c86e98ba5aa",
+    "portable_wrapper_changes": false
+  }
+}

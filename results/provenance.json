@@ -1,0 +1,28 @@
+{
+  "release_date": "2026-10-07",
+  "type": "historical recorded aggregates",
+  "source_report_identities": [
+    {
+      "label": "September 29 stage results",
+      "sha256": "065b186d3f7661e9c515d06178e8c2ef96d2e63b4e26f3c3b0fd954159ae5ac1"
+    },
+    {
+      "label": "1.5B complete online evaluation",
+      "sha256": "f9c419ab64ae0666a499edd883ed36835b4c7ca863cddd57e56453eacf2af2d4"
+    },
+    {
+      "label": "7B complete online evaluation",
+      "sha256": "53e794132c2edfcb033d76fd12d4c86bf9d2fab3b799c8de5b360b6eb642819c"
+    },
+    {
+      "label": "October 1 AMC23 final report",
+      "sha256": "2bfd70caf9376a586916d45f16abb300d072d169de7129d104e73537b6f940e7"
+    },
+    {
+      "label": "October 1 AIME25 final report",
+      "sha256": "72fe6b0573fec13d4c762071d394c89e056ac0688399a3975e83d72756d1ec15"
+    }
+  ],
+  "raw_outputs_included": false,
+  "new_gpu_evaluation": false
+}

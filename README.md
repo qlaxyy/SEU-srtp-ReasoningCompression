@@ -1,206 +1,107 @@
-# ASC：Activation Steering 压缩推理实验
+# SEU SRTP · Reasoning Compression
 
-本仓库用于复现与扩展 ASC（Activation Steering for Chain-of-Thought Compression）方向的阶段性实验。核心目标是：在尽量保持数学推理正确率的同时，减少 reasoning 模型生成的 CoT token 数。
+基于 ReBalance 的分阶段推理压缩：在 EasySteer/vLLM 上实现批量有状态引导，复用 ReBalance 信号施加动态词法惩罚，并在自然进入最终答案阶段后注入 SRQ/PCA16 答案向量。模型权重不做梯度训练或微调。
 
-当前整理后的主要代码入口是：
+**当前发布路线：ReBalance + EasySteer/vLLM + L27 校准动态惩罚（最大 32）+ SRQ/PCA16。**
 
-```text
-ASC_phase1/
+这是东南大学 SRTP 项目的研究代码发布版。ReBalance 是基础方法，EasySteer 和 vLLM 是上游框架；本项目提供状态相关词法控制、推理/答案阶段组合及其工程适配。这里的 PCA16 是项目对 SRQ/PCA-CAA 思想的明确实现选择，不是 SRQ 作者未公开代码的精确复刻。
+
+## 方法概览
+
+```mermaid
+flowchart LR
+  T[Training trajectories] --> R[ReBalance vector and controller]
+  T --> C[Training-only penalty calibration]
+  T --> Q[SRQ selection / PCA16 answer vector]
+  P[Prompt] --> H[Reasoning hidden states]
+  R --> H
+  H --> L[LM head logits]
+  C --> D[Dynamic L27 penalty]
+  L --> D
+  D --> S[Sample next token]
+  S --> H
+  S -->|natural end-of-think| A[Answer-stage vector injection]
+  Q --> A
+  A --> O[Final answer]
 ```
 
-结果汇总入口是：
+- **推理阶段**：沿用自校准 ReBalance 的向量和动态系数，在步骤边界引导。
+- **L27 动态惩罚**：仅在负系数分支、步骤开头和词表匹配条件满足时，对候选 logits 减去 `k · ln(2)`。L27 是 27 个词/词组的匹配表名称，**不是第 27 层**。
+- **答案阶段**：模型自然输出 `</think>` 后，在指定层按 token 加入 `0.25 · d_answer`。不强制结束推理，不替换答案，不在线读取标准答案。
+- **工程实现**：逐请求状态、异步调度、图内执行、阶段切换、7B KV 重放，以及显式 BF16 舍入。
 
-```text
-results/RESULT_SUMMARY.md
-```
+方法公式和实际代码边界见 [方法说明](docs/method.md)。
 
-## 当前阶段结论
+## 已完成的历史结果
 
-当前已经完成的主要工作：
+模型均为 `DeepSeek-R1-Distill-Qwen`。`ReBalance` 指本项目冻结的自校准适配，**不含 L27 或答案向量**。主比较是单独 ReBalance 与完整组合；压缩率以同模型、同数据集的无干预总输出 token 为分母。
 
-- 整理出相对独立的 ASC 实验管线；
-- 支持下载/读取本地 GSM8K 与 MATH 数据；
-- 支持生成 long/short CoT pairs；
-- 支持人工剔除无效 pairs 后提取 steering vector；
-- 支持在 CoT baseline 与 ASC 不同 gamma 下做评测；
-- 支持 Qwen3-8B thinking mode 的官方推荐采样参数；
-- 尝试实现论文 KL gamma 公式，并记录其工程困难。
+| 模型 | 数据集 | ReBalance 准确率 % | 完整组合准确率 % | ReBalance 平均 token | 完整组合平均 token | 完整组合压缩率 |
+|---|---|---:|---:|---:|---:|---:|
+| 1.5B | MATH-500 | 82.20 | 79.80 | 3554.2 | 2938.0 | 34.14% |
+| 1.5B | GSM8K | 79.00 | 77.63 | 846.4 | 711.0 | 39.39% |
+| 7B | MATH-500 | 92.00 | 91.60 | 3234.1 | 2640.3 | 31.28% |
+| 7B | GSM8K | 89.61 | 90.67 | 1005.4 | 800.8 | 32.41% |
+| 1.5B | AMC23 | 65.00 | 67.50 | 6776.3 | 4658.0 | 36.67% |
+| 7B | AMC23 | 90.00 | 82.50 | 4929.8 | 3963.1 | 32.95% |
+| 1.5B | AIME25* | 26.67 | 16.67 | 9761.0 | 6484.8 | 40.33% |
+| 7B | AIME25* | 40.00 | 36.67 | 9724.4 | 7360.1 | 34.38% |
 
-当前比较有价值的阶段性结果如下。表中的压缩率均相对于同模型、同数据集的 CoT baseline 计算。
+这些是已有单种子实验记录，未因整理开源仓库重新生成。完整组合在这些设置下降低了 token，但准确率并非普遍保持或提升。MATH-500/GSM8K 的历史基线与新方案存在引擎批次配置差别，不能将点值差异当作严格同配置的因果结果。*AIME25 使用项目保存的题面版本，部分文字与公开数据不同；不等同于任意当前在线版本。完整计数、答案向量消融和比较限制见 [结果说明](docs/results.md) 与 [CSV](results/historical_results.csv)。
 
-| Model | Dataset | Vector source | gamma | Accuracy | Avg tokens | Token compression |
-|---|---|---|---:|---:|---:|---:|
-| Qwen3-8B | GSM8K | Self-extracted vector | 0.65 | 96.00% | 1467.00 | 23.1% |
-| DeepSeek-R1-Distill-Qwen-7B | GSM8K | Self-extracted vector | 0.30 | 90.50% | 499.41 | 30.3% |
-| DeepSeek-R1-Distill-Qwen-7B | MATH | Self-extracted vector | 0.30 | 88.00% | 1639.63 | 30.3% |
-| DeepSeek-R1-Distill-Qwen-7B | MATH | Author vector | 0.27 | 88.00% | 1774.40 | 24.5% |
-| DeepSeek-R1-Distill-Llama-8B | MATH | Author vector | 0.47 | 86.00% | 1810.80 | 26.3% |
+## 快速开始
 
-这些结果说明：原作者向量和自己重新提取的新向量都能在部分模型/数据集上带来有效压缩；其中新向量在 DeepSeek-R1-Distill-Qwen-7B 的 GSM8K 与 MATH 上表现比较稳定，Qwen3-8B 在官方 thinking-mode 设置下也已经出现可继续推进的压缩信号。
-
-完整结果见：
-
-```text
-results/RESULT_SUMMARY.md
-```
-
-## 仓库结构
-
-```text
-ASC_phase1/
-  answer_utils.py                 # 答案提取与正确性判断
-  asc_steering_utils.py            # pairs 生成与 activation 提取公共工具
-  download_datasets.py             # 下载/整理 GSM8K 与 MATH
-  generate_cot_pairs.py            # 生成 long/short CoT pairs
-  extract_steering_vector.py       # 从清洗后的 pairs 提取 steering vector
-  extract_optimal_gamma.py         # 基于 hidden norm 给出 gamma 搜索范围
-  extract_paper_kl_gamma.py        # 论文 KL gamma 诊断的工程实现尝试
-  eval_asc_paper.py                # 统一评测脚本
-  测试.md                          # 三个实验层次的完整命令清单
-  docs/
-    GAMMA_CALIBRATION_SUMMARY.md   # gamma 方法总结
-    ASC_PAPER_FULL.md              # ASC 论文 Markdown 阅读版
-    全复现.md                      # 复现说明补充
-
-results/
-  RESULT_SUMMARY.md                # GitHub 展示版结果总表
-  
-legacy/
-  author_code/                     # 作者公开的原始脚本，仅作对照
-```
-
-根目录下仍保留了一些早期探索脚本和结果文件。后续正式使用时，优先查看 `ASC_phase1/`。
-
-## 核心实验流程
-
-完整流程分为四步：
-
-```text
-1. 下载/准备数据集
-2. 生成 long/short CoT pairs
-3. 人工检查 pairs，删除无效、截断、复读样本
-4. 提取 steering vector，并在评测脚本中测试不同 gamma
-```
-
-最重要的规则：
-
-```text
-提取引导向量、提取 gamma、最终评测必须使用同一个 layer_index。
-```
-
-prompt 也要按模型口径固定：
-
-```text
-DeepSeek-R1-Distill-Qwen-7B / DeepSeek-R1-Distill-Llama-8B / QwQ-32B: paper_cot
-Qwen3-8B: chat_boxed_cot + qwen3_enable_thinking
-```
-
-换到全新模型时，不要直接照抄这里的 prompt。先看模型官网或模型卡，确认是否需要 chat template、thinking mode，以及数学评测推荐的输出格式。
-
-例如 Qwen3-8B 当前推荐使用：
-
-```text
---layer_index 24
-```
-
-## 关键脚本
-
-| 脚本 | 作用 |
-|---|---|
-| `ASC_phase1/download_datasets.py` | 下载/整理 GSM8K 与 MATH 数据 |
-| `ASC_phase1/generate_cot_pairs.py` | 生成 long/short CoT pairs |
-| `ASC_phase1/extract_steering_vector.py` | 根据 checked pairs 提取 steering vector |
-| `ASC_phase1/extract_optimal_gamma.py` | 用 hidden norm ratio 估计 gamma 搜索范围 |
-| `ASC_phase1/extract_paper_kl_gamma.py` | 尝试按论文 KL 上界公式求 gamma |
-| `ASC_phase1/eval_asc_paper.py` | 评测 CoT baseline 与 ASC gamma |
-| `ASC_phase1/测试.md` | 原模型、新向量、新模型三种层次的命令清单 |
-
-## Qwen3-8B 当前推荐评测口径
-
-Qwen3-8B 使用官方 thinking-mode 推荐参数：
-
-```text
-prompt_mode=chat_boxed_cot
-thinking=True
-temperature=0.6
-top_p=0.95
-top_k=20
-min_p=0.0
-```
-
-当前阶段统一使用 transformers 路径评测。vLLM 虽然可以加速 `gamma=0` baseline，但会引入额外依赖兼容风险，暂不放入主流程。
+### CPU 检查
 
 ```bash
-python eval_asc_paper.py \
-  --model_name /root/autodl-tmp/Qwen/Qwen3-8B \
-  --dataset gsm8k \
-  --limit 200 \
-  --candidate_gammas 0,0.46,0.55,0.65,0.75,0.9 \
-  --prompt_mode chat_boxed_cot \
-  --qwen3_enable_thinking \
-  --temperature 0.6 \
-  --top_p 0.95 \
-  --top_k 20 \
-  --min_p 0.0 \
-  --max_new_tokens 4096 \
-  --steering_vector_path vectors/steering_vectors_qwen3_8b_math_train_deepseek_checked_layer24.pt \
-  --layer_index 24 \
-  --batch_size 24 \
-  --attn_impl flash_attention_2 \
-  --per_gamma_output_dir results/qwen3_8b_gsm8k_200_layer24
+git clone https://github.com/qlaxyy/SEU-srtp-ReasoningCompression.git
+cd SEU-srtp-ReasoningCompression
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[test]'
+python -m reasoning_compression.cli --model 1p5b --dataset math500 --method full --dry-run
+python -m pytest -q
 ```
 
-更多命令见：
+不安装 PyTorch 时，纯 CPU 配置/数据/公式检查可以运行，张量内核测试会跳过。运行完整 CPU 测试可另装 CPU 版 PyTorch。Windows 可执行 CPU 检查；实际推理使用 Linux + NVIDIA GPU。
 
-```text
-ASC_phase1/测试.md
+### GPU 环境和一次完整测评
+
+历史环境为 Python 3.12、PyTorch 2.11.0+cu129、固定版本的 EasySteer/vLLM，单张 RTX 4090 D 24 GB。不要直接用任意 PyPI vLLM 替代项目分支。
+
+```bash
+# 在独立的 Python 3.12 环境中安装；会下载推理依赖，不下载模型权重
+bash scripts/install_gpu.sh
+python scripts/prepare_data.py --dataset math500
+
+# MODEL_PATH 指向自行下载的官方模型本地快照
+python -m reasoning_compression.cli \
+  --model 1p5b --dataset math500 --method full \
+  --input data/math500/questions.json \
+  --model-path "$MODEL_PATH" \
+  --output outputs/1p5b_math500_full_s42 --execute
 ```
 
-## Gamma 相关说明
+`--method` 支持 `unsteered`、`rebalance`、`l27`、`dynamic32`、`full`。`full` 是动态 32 + 答案向量，`l27` 是固定 `ln 2` 惩罚。默认完整数据集，`--max-samples` 只用于明确标记的小样本检查。执行时校验源代码、模型与数据身份，输出目录已存在则拒绝覆盖。
 
-目前有两类 gamma 辅助脚本：
+新增的公开启动入口已经做 CPU 检查；本次发布未重跑 GPU。原计算核心保留，组合方法的 GPU 执行先运行零强度、非零影响和 7B 重放工程检查，通过才进入正式生成。安装、评分、批量运行和故障排查见 [复现指南](docs/reproduction.md)。
 
-```text
-extract_optimal_gamma.py
-```
+## 仓库内容
 
-这是经验尺度方法，根据 steering perturbation 占 hidden norm 的比例给出候选 gamma。它不是自动最优，只用于缩小搜索范围。
+| 目录 | 内容 |
+|---|---|
+| `reasoning_compression/` | 统一 CLI、配置、输入隔离、CPU 拟合公式 |
+| `runtime/1p5b/`, `runtime/7b/` | 最终实验的阶段控制、词法惩罚、答案注入与工程检查 |
+| `runtime/overlays/vllm/` | 相对固定上游版本的 12 份运行时覆盖文件 |
+| `assets/` | 模型专属的小型引导向量、拟合参数、词表匹配自动机及来源校验 |
+| `configs/datasets/` | 历史测试题的顺序与身份哈希，不含题面或答案 |
+| `scripts/` | 引擎准备、数据准备、训练集拟合、评测、汇总 |
+| `tests/` | 公式、输入隔离、阶段切换、零强度、请求重排与重放检查 |
+| `results/`, `docs/` | 历史聚合结果、方法与复现说明、探索方向记录 |
+| `third_party/`, `licenses/` | 必要的上游小型源码、判分器与许可证 |
 
-```text
-extract_paper_kl_gamma.py
-```
+不附带模型权重、完整输出、付费标注原文、私人实验目录和连接凭据。使用发布向量即可进行推理；重新构建答案向量需要自行提供训练特征与 SRQ 标签，见 [校准与向量构建](docs/calibration.md)。
 
-这是按论文 KL 上界思路自行实现的诊断脚本。论文给出了理论形式，但公开代码没有完整工程实现；当前实现可用于分析和记录，但不作为最终自动 gamma 选择依据。
+## 上游与许可
 
-当前实践结论是：gamma 仍主要通过任务评测选择，即看准确率与 token 数的折中。
-
-## 已知问题
-
-第二阶段计划中的“论文 KL gamma 自动求解”目前没有完全成功。主要原因是：
-
-- 论文给出了理论推导，但没有提供完整工程实现；
-- 对大模型长上下文做 JVP/HVP 或有限差分时显存压力很大；
-- 理论得到的 gamma 与实际任务最优 gamma 之间仍有明显差距；
-- 这也导致后续“动态 gamma 校准机制”暂时无法可靠推进。
-
-因此当前阶段更稳妥的做法是：
-
-```text
-用 hidden norm 方法给出候选范围，再用 GSM8K/MATH 实测选择 gamma。
-```
-
-## 下一步
-
-后续工作主要有三个方向：
-
-1. **自动清洗 long/short CoT pairs**
-
-   当前 pairs 仍依赖人工筛选。后续可以复用已有的答案提取与比对逻辑，自动判断 long/short CoT 是否给出正确答案，并剔除无答案、答案错误、长度截断或明显异常的样本。
-
-2. **转换自动 gamma 获取思路**
-
-   现有论文 KL gamma 公式在工程实现上仍不稳定。后续可以从“不偏离推理轨迹”的角度重新设计自动 gamma 获取方法：不是只追求更大的扰动，而是约束 steering 后的模型状态仍沿着合理推理轨迹前进。
-
-3. **研究加速推理与 ASC 注入的结合**
-
-   当前 `gamma=0` baseline 可以使用 vLLM 加速，但非零 gamma 仍依赖 transformers 的中间层 hook。后续需要研究 activation steering 的引导向量注入是否能在 vLLM 或类似高吞吐推理框架中实现，从而减少 ASC 评测与部署成本。
+感谢 [ReBalance](https://github.com/yu-lin-li/ReBalance)、[EasySteer](https://github.com/ZJU-REAL/EasySteer)、[vLLM](https://github.com/vllm-project/vllm) 及相关向量引导工作。固定版本、修改范围、SRQ/PCA 的来源与许可见 [第三方说明](THIRD_PARTY_NOTICES.md)。新代码采用 Apache-2.0；第三方文件保留其原许可。

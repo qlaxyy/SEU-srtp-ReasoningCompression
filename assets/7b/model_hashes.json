@@ -1,0 +1,37 @@
+{
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+  "files": {
+    "config.json": {
+      "bytes": 680,
+      "sha256": "8290d3c1e385e2616572eb6926f7e2745f901d1c13da95970326a8a73f6c379c"
+    },
+    "generation_config.json": {
+      "bytes": 181,
+      "sha256": "72cbec1015da9ed03ad025483005cbf6481403abf947adfd54e504d1a66a2126"
+    },
+    "configuration.json": {
+      "bytes": 73,
+      "sha256": "f888421726665e8a84b738eed42a64875aed79de8be7daade851ac8bf4c0cef9"
+    },
+    "model.safetensors.index.json": {
+      "bytes": 28090,
+      "sha256": "788266ec033788abcf34b2cb8fe156ce300ae05d94d3d54c60f2ecffd8927a1a"
+    },
+    "tokenizer_config.json": {
+      "bytes": 3071,
+      "sha256": "8ac8c85fb242563c2260baec0909debd69d718af6a0b3d90e6cab62b4d341cd5"
+    },
+    "tokenizer.json": {
+      "bytes": 7031660,
+      "sha256": "88145e3c3249adc2546ede277e9819d6e405e19072456e4b521cbc724bd60773"
+    },
+    "model-00002-of-000002.safetensors": {
+      "bytes": 6624675384,
+      "sha256": "1780a9502f56f592cb4d6262c8c76ca8ad36a86b0257e052c672d87f49707e80"
+    },
+    "model-00001-of-000002.safetensors": {
+      "bytes": 8606596466,
+      "sha256": "8b27be8d43b81d0cd19b3113ef88caf1a61c2fc602de77e3cce97aedcec184b4"
+    }
+  }
+}

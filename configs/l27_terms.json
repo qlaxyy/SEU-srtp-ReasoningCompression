@@ -1,0 +1,32 @@
+{
+  "source": "ReBalance hidden_analysis_auto.py LEXICON_BASE; matching and gating adapted by this project",
+  "terms": [
+    "alternatively",
+    "alternative",
+    "another",
+    "perhaps",
+    "maybe",
+    "wait",
+    "but",
+    "think again",
+    "make sure",
+    "just to ensure",
+    "there any other",
+    "some other",
+    "should consider",
+    "about whether",
+    "if they have",
+    "i was",
+    "any errors",
+    "or something",
+    "let me check",
+    "hold on",
+    "double check",
+    "however",
+    "confusing",
+    "differently",
+    "careful",
+    "sometimes",
+    "alternate"
+  ]
+}
